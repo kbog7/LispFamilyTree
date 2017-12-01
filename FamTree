@@ -8,15 +8,15 @@
 
 (defparameter *family* (make-hash-table))
 
-(defun isParent(name1, name2) )
+(defun isParent(name1 name2) )
 
-(defun isSibling(name1, name2)
+(defun isSibling(name1 name2)
 
 )
 
-(defun isHalfSibling(name1, name2) )
+(defun isHalfSibling(name1 name2) )
 
-(defun isAncestor(name1, name2) )
+(defun isAncestor(name1 name2) )
 
 (defun addAncestor(name1)
   (if (null (person-parents p))
@@ -24,20 +24,21 @@
             (ancestors(second (person-parents p))))
  )
 
-(defun isCousin(name1, name2) )
+(defun isCousin(name1 name2) )
 
-(defun isUnRelated(name1, name2) )
+(defun isUnRelated(name1 name2) )
 
 
 (defun family() 
   (let ((line nil))
-   (setf line (read-line *standard-input* nil nil()
+   (setf line (read-line *standard-input* nil nil()))
    (loop 
     (when (null line) (return))
+      (setq query (line first))
       (setq firstName (line second))
       (setq secondName (line third))
       (setq thirdName (line fourth))
-     (if (eq line first 'E)
+     (if (eq query 'E)
       (let ((p1 nil) (p2 nil) (p3 nil))
        (when (null thirdName)
          (setf p1 (gethash firstName *family*))
@@ -56,10 +57,14 @@
             (setf (gethash thirdName *family*) p3)
             (setf (person-parents p3) (list firstName secondName))
           )
-     )
-   )
-
-     (if (eq line first 'X) )
-
-     (if (eq line first 'W) )
+       ) 
+    )
 )
+     (if (eq query 'X))
+
+     (if (eq query 'W))
+     )
+ 
+   )
+)
+
