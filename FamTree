@@ -1,17 +1,18 @@
- ;;;; -*- Mode: Common-Lisp -*-
+  ;;;; -*- Mode: Common-Lisp -*-
 (defstruct person(name)
   (parents nil)
-  (children nil)
   (siblings nil)
   (halfsiblings nil)
   (ancestors nil)
 )
 
-(defparameter *family* (make-hash-table)
+(defparameter *family* (make-hash-table))
 
 (defun isParent(name1, name2) )
 
-(defun isSibling(name1, name2) )
+(defun isSibling(name1, name2)
+
+)
 
 (defun isHalfSibling(name1, name2) )
 
@@ -33,13 +34,28 @@
    (setf line (read-line *standard-input* nil nil()
    (loop 
     (when (null line) (return))
+    (setq firstName (line second))
+    (setq secondName (line third))
+    (setq thirdName (line fourth))
      (if (eq line first 'E)
-       (when (null line fouth)
-         ;;; Check if in map, if not add them
-         (if (gethash line second *family*)
-             
-             )
-       )
+      (let ((p1 nil) (p2 nil) (p3 nil))
+       (when (null thirdName)
+         (setf p1 (gethash firstName *family*))
+         (setf p2 (gethash secondName *family*))
+         
+         (when (null (gethash firstName *family))
+           (setf p1 (make-person :name firstName))
+           (setf (gethash firstName *family*) p1))
+
+          (when (null (gethash secondName *family))
+           (setf p2 (make-person :name secondName))
+           (setf (gethash secondName *family*) p2))
+
+          (when name3
+            (setf p3 (make-person :name thirdName))
+            (setf (gethash thirdName *family*) p3)
+            (setf (person-parents p3) (list firstName secondName))
+          )
      )
 
      (if (eq line first 'X) )
