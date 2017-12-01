@@ -1,4 +1,4 @@
-  ;;;; -*- Mode: Common-Lisp -*-
+;;;; -*- Mode: Common-Lisp -*-
 (defstruct person(name)
   (parents nil)
   (siblings nil)
@@ -34,9 +34,9 @@
    (setf line (read-line *standard-input* nil nil()
    (loop 
     (when (null line) (return))
-    (setq firstName (line second))
-    (setq secondName (line third))
-    (setq thirdName (line fourth))
+      (setq firstName (line second))
+      (setq secondName (line third))
+      (setq thirdName (line fourth))
      (if (eq line first 'E)
       (let ((p1 nil) (p2 nil) (p3 nil))
        (when (null thirdName)
@@ -57,6 +57,7 @@
             (setf (person-parents p3) (list firstName secondName))
           )
      )
+   )
 
      (if (eq line first 'X) )
 
