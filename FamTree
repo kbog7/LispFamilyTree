@@ -1,4 +1,5 @@
 ;;;; -*- Mode: Common-Lisp -*-
+
 (defstruct person(name)
   (parents nil)
   (siblings nil)
@@ -6,27 +7,47 @@
   (ancestors nil)
 )
 
-(defparameter *family* (make-hash-table))
+(defparameter *familyMap* (make-hash-table))
 
-(defun isParent(name1 name2) )
+(defun isParent(name1 name2)
+  (find name1 (person-parents name2)))
 
 (defun isSibling(name1 name2)
+ (equal? (person-parents name1) (person-parents name2))
 
-)
+(defun isHalfSibling(name1 name2)
+ (if (equal? (person-parents name1) (person-parents name2))
+    (print "No")
+    ((if(string-equal (first (person-parents name1) (first (person-parents name2 ))))
+         (print "Yes")
+         ((if(string-equal (first (person-parents name1) (second (person-parents name2 )))))
+          (print "Yes")
+          ((if(string-equal (second (person-parents name1) (first (person-parents name2 )))))
+           (print "Yes")
+           ((if(string-equal (second (person-parents name1) (second (person-parents name2 )))))
+            (print "Yes")
+            (print "No"))))))))
 
-(defun isHalfSibling(name1 name2) )
-
-(defun isAncestor(name1 name2) )
+(defun isAncestor(name1 name2)
+ (addAncestor(name2))
+ (find name1 (person-ancestors name2)))
 
 (defun addAncestor(name1)
-  (if (null (person-parents p))
-            (ancestors(first (person-parents p)))
-            (ancestors(second (person-parents p))))
- )
+  (if (null (person-parents name1))
+            (addAncestor(first (person-parents name1)))
+            (addAncestor(second (person-parents name1)))))
 
-(defun isCousin(name1 name2) )
+(defun isCousin(name1 name2)
+  (addAncestor (name1))
+  (addAncestor (name2))
+  (loop 
+   for x in (person-ancestors name1)
+    (if (find x (person-ancestors name2)
+        (print "Yes")
+        (print "No")))))
+   
 
-(defun isUnRelated(name1 name2) )
+(defun isUnRelated(name1 name2))
 
 
 (defun family() 
@@ -34,37 +55,29 @@
    (setf line (read-line *standard-input* nil nil()))
    (loop 
     (when (null line) (return))
-      (setq query (line first))
-      (setq firstName (line second))
-      (setq secondName (line third))
-      (setq thirdName (line fourth))
+      (split-sequence #\Space line)
+      (setf query (first line))
+      (setf firstName (second line))
+      (setf secondName (third line))
+      (setf thirdName (fourth line))
      (if (eq query 'E)
       (let ((p1 nil) (p2 nil) (p3 nil))
        (when (null thirdName)
-         (setf p1 (gethash firstName *family*))
-         (setf p2 (gethash secondName *family*))
+         (setf p1 (gethash firstName *familyMap*))
+         (setf p2 (gethash secondName *familyMap*))
          
-         (when (null (gethash firstName *family))
+         (when (null (gethash firstName *familyMap*))
            (setf p1 (make-person :name firstName))
-           (setf (gethash firstName *family*) p1))
+           (setf (gethash firstName *familyMap*) p1))
 
-          (when (null (gethash secondName *family))
+          (when (null (gethash secondName *familyMap*))
            (setf p2 (make-person :name secondName))
-           (setf (gethash secondName *family*) p2))
+           (setf (gethash secondName *familyMap*) p2))
 
           (when name3
             (setf p3 (make-person :name thirdName))
-            (setf (gethash thirdName *family*) p3)
-            (setf (person-parents p3) (list firstName secondName))
-          )
-       ) 
-    )
-)
-     (if (eq query 'X))
+            (setf (gethash thirdName *familyMap*) p3)
+            (setf (person-parents p3) (list firstName secondName))))))
 
-     (if (eq query 'W))
-     )
- 
-   )
-)
-
+     (if (string-equal query 'X))  
+     (if (string-equal  query 'W))))) 
