@@ -1,6 +1,7 @@
 ;;;; -*- Mode: Common-Lisp -*-
 
-(defstruct person(name)
+(defstruct person 
+  (name nil)
   (parents nil)
   (siblings nil)
   (halfsiblings nil)
@@ -9,13 +10,13 @@
 
 (defparameter *familyMap* (make-hash-table))
 
-(defun isParent(name1 name2)
+(defun isParent (name1 name2)
   (find name1 (person-parents name2)))
 
-(defun isSibling(name1 name2)
- (equal? (person-parents name1) (person-parents name2))
+(defun isSibling (name1 name2)
+ (equal? (person-parents name1) (person-parents name2)))
 
-(defun isHalfSibling(name1 name2)
+(defun isHalfSibling (name1 name2)
  (if (equal? (person-parents name1) (person-parents name2))
     (print "No")
     ((if(string-equal (first (person-parents name1) (first (person-parents name2 ))))
@@ -28,29 +29,22 @@
             (print "Yes")
             (print "No"))))))))
 
-(defun isAncestor(name1 name2)
+(defun isAncestor (name1 name2)
  (addAncestor(name2))
  (find name1 (person-ancestors name2)))
 
-(defun addAncestor(name1)
+(defun addAncestor (name1)
   (if (null (person-parents name1))
-            (addAncestor(first (person-parents name1)))
-            (addAncestor(second (person-parents name1)))))
+            (addAncestor (first (person-parents name1)))
+            (addAncestor (second (person-parents name1)))))
 
-(defun isCousin(name1 name2)
-  (addAncestor (name1))
-  (addAncestor (name2))
-  (loop 
-   for x in (person-ancestors name1)
-    (if (find x (person-ancestors name2)
-        (print "Yes")
-        (print "No")))))
+(defun isCousin (name1 name2))
    
 
 (defun isUnRelated(name1 name2))
 
 
-(defun family() 
+(defun family () 
   (let ((line nil))
    (setf line (read-line *standard-input* nil nil()))
    (loop 
@@ -81,3 +75,4 @@
 
      (if (string-equal query 'X))  
      (if (string-equal  query 'W))))) 
+
