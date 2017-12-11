@@ -27,9 +27,9 @@
            (ancestors (first (person-parents name)))
            (ancestors (second (person-parents name))))))
 
-(defun isCousins (name1, name2))
+(defun isCousins (name1 name2))
 
-(defun isUnRelated (name1, name2)
+(defun isUnRelated (name1 name2)
   (setf firstAnc (ancestors name1))
   (setf secondAnc (ancestors name2)))
 
@@ -47,7 +47,7 @@
       (setf query (first input))
       (setf firstName (second input))
       (setf secondName (third input))
-      (setf thirdName (fourth input)
+      (setf thirdName (fourth input))
      (if (eq query 'E)
       (let ((p1 nil) (p2 nil) (p3 nil))
        (when (null thirdName)
