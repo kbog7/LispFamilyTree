@@ -3,8 +3,6 @@
 (defstruct person 
   (name nil)
   (parents nil)
-  (siblings nil)
-  (halfsiblings nil)
   (ancestors nil)
 )
 
@@ -71,7 +69,9 @@
         (query nil)
         (firstName nil)
         (secondName nil)
-        (thirdName nil))
+        (thirdName nil)
+        (everybody nil)
+        (relatedTo nil))
    (loop 
     (setf line (read-line *standard-input* nil nil))
     (when (null line) (return))
@@ -80,7 +80,7 @@
       (setf firstName (second input))
       (setf secondName (third input))
       (setf thirdName (fourth input))
-      (let ((p1 nil) (p2 nil) (p3 nil) (relatedTo nil) (everybody nil))
+      (let ((p1 nil) (p2 nil) (p3 nil))
         (when (string= query "E")
           (when (null thirdName)
             (setf p1 (gethash firstName *familyMap*))
@@ -93,9 +93,6 @@
             (when (null (gethash secondName *familyMap*))
               (setf p2 (make-person :name secondName))
               (setf (gethash secondName *familyMap*) p2)))
-          
-            (push everybody firstName)
-            (push everybody secondName)
           
           (when thirdName
             (setf p1 (gethash firstName *familyMap*))
@@ -113,17 +110,16 @@
             (setf (gethash thirdName *familyMap*) p3)
             (setf (person-parents p3) (list firstName secondName))
 
-            (push everybody firstName)
-            (push everybody secondName)
-            (push everybody thirdName)
-
             )
-           (print everybody)
-         ;;;  (maphash #'(lambda (k v) (format t "k=~A v=~A~%" k v)) *familyMap*)
           )
         
         (when (string= query "X")
-          (when (string= secondName "parent") 
+          (print line)
+          (maphash #'(lambda (k v)(push k everybody)) *familyMap*)
+         ;;;; (if (not (find thirdName in everybody :test #'string=)) 
+         ;;;;     (print "No")
+              
+         (when (string= secondName "parent") 
             (if (isParent firstName (gethash thirdName *familyMap*))
                 (print "Yes")
                 (print "No")))
@@ -146,10 +142,44 @@
           (when (string= secondName "unrelated")
             (if (isUnRelated firstName thirdName)
                 (print "No")
-                (print "Yes")))
-          )
+                (print "Yes"))))
         
         (when (string= query "W")
-          
-          
-)))))
+          (print line)
+          (maphash #'(lambda (k v)(push k everybody)) *familyMap*)
+          (when (string= firstName "parent")
+           (print (sort (person-parents (gethash secondName *familyMap*)) #'string-lessp)))
+          (when (string= firstName "sibling")
+           (loop for y in everybody
+                 do (if (isSibling (gethash y *familyMap*) (gethash secondName *familyMap*))
+                       (if (string= y secondName)
+                          nil
+                         (push y relatedTo)))))
+          (when (string= firstName "half-sibling")
+           (loop for y in everybody
+                 do (if (isHalfSibling (gethash y *familyMap*) (gethash secondName *familyMap*))
+                       (if (string= y secondName)
+                          nil
+                         (push y relatedTo)))))
+          (when (string= firstName "ancestor")
+           (loop for y in everybody
+                 do (if (isAncestor y secondName)
+                       (if (string= y secondName)
+                          nil
+                         (push y relatedTo)))))
+          (when (string= firstName "cousin")
+           (loop for y in everybody
+                 do (if (isCousin y secondName)
+                       (if (string= y secondName)
+                          nil
+                         (push y relatedTo)))))
+          (when (string= firstName "unrelated")
+           (loop for y in everybody
+                 do (if (isUnRelated y secondName)
+                       (if (string= y secondName)
+                          nil
+                         (push y relatedTo)))))
+                
+    (setf relatedTo (remove-duplicates relatedTo :test #'equal))
+    (print (sort relatedTo #'string-lessp)))
+        ))))
