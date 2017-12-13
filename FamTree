@@ -25,7 +25,6 @@
      (incf d)))
 
 (defun ancestors (name) 
- ;;;(when (person-parents name)
    (if (null (person-parents (gethash name *familyMap*)))
         nil
          (when (person-parents (gethash name *familyMap*))       
@@ -114,12 +113,19 @@
           )
         
         (when (string= query "X")
+          (setf count 0)
           (print line)
           (maphash #'(lambda (k v)(push k everybody)) *familyMap*)
-         ;;;; (if (not (find thirdName in everybody :test #'string=)) 
-         ;;;;     (print "No")
-              
-         (when (string= secondName "parent") 
+          (setf everybody (remove-duplicates everybody :test #'equal))
+          (if (find firstName everybody :test #'string=)
+             (incf count))
+          (if (find thirdName everybody :test #'string=)
+              (incf count))
+          (when (< count 2)
+            (print "No"))
+
+          (when (= count 2)
+          (when (string= secondName "parent") 
             (if (isParent firstName (gethash thirdName *familyMap*))
                 (print "Yes")
                 (print "No")))
@@ -142,11 +148,20 @@
           (when (string= secondName "unrelated")
             (if (isUnRelated firstName thirdName)
                 (print "No")
-                (print "Yes"))))
+                (print "Yes")))))
         
         (when (string= query "W")
+          (setf count 0)
+          (setf relatedTo nil)
           (print line)
           (maphash #'(lambda (k v)(push k everybody)) *familyMap*)
+          (if (find secondName everybody :test #'string=)
+             (incf count))
+
+          (when (< count 1)
+            (print "No"))
+          
+          (when (= count 1)
           (when (string= firstName "parent")
            (print (sort (person-parents (gethash secondName *familyMap*)) #'string-lessp)))
           (when (string= firstName "sibling")
@@ -173,12 +188,12 @@
                        (if (string= y secondName)
                           nil
                          (push y relatedTo)))))
-          (when (string= firstName "unrelated")
+           (when (string= firstName "unrelated")
            (loop for y in everybody
-                 do (if (isUnRelated y secondName)
+                 do (if (not (isUnRelated y secondName))
                        (if (string= y secondName)
                           nil
-                         (push y relatedTo)))))
+                         (push y relatedTo))))))
                 
     (setf relatedTo (remove-duplicates relatedTo :test #'equal))
     (print (sort relatedTo #'string-lessp)))
